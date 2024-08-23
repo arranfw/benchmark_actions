@@ -2,12 +2,12 @@ name: 'Start benchmark timer'
 description: 'starts a timer'
 inputs:
   timer_name:
+    description: 'Name of the timer'
     required: true
-    type: string
 outputs:
   start_time:
     description: "Timestamp of the start of the job"
-    value: ${{ jobs.start_time.outputs.timer_start }}
+    value: ${{ steps.start_time.outputs.timer_start }}
 
 runs:
   using: "composite"
@@ -15,9 +15,11 @@ runs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Get current timestamp
+      shell: bash
       id: current_timestamp
-      run: echo "::set-output current_timestamp=date::$(date +'%S')"
+      run: printf 'start_time=%(%s)T\n' >> "$GITHUB_OUTPUT"
     - name: Set start timestamp
+      shell: bash
       id: start-time
       run: |
         # printf 'install_start=%(%s)T\n'
